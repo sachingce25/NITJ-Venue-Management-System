@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CampusEvents — College Event Management</title>
+  <meta name="description"
+    content="College Event Management System — View and manage events organized by different clubs">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/css/login.css">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+  <div class="auth-page">
+
+    <div class="auth-card">
+
+      <!-- SIGN IN PANEL (Left) -->
+      <div class="panel sign-in-panel" id="signInPanel">
+        <h2>Welcome back</h2>
+        <p class="panel-subtitle">Sign in to your account</p>
+
+        <div class="social-btns">
+          <button type="button" class="social-btn google-btn" id="googleSignInBtn">
+            <img src="https://developers.google.com/identity/images/g-logo.png" alt="G" width="18" height="18">
+            <span>Sign in with Google</span>
+          </button>
+        </div>
+
+        <div class="divider">
+          <span></span>
+          <small>or with email</small>
+          <span></span>
+        </div>
+
+        <form id="signInForm">
+          <input type="email" id="loginEmail" placeholder="Email address" required>
+          <input type="password" id="loginPassword" placeholder="Password" required>
+          <div class="forgot-row">
+            <a href="#">Forgot password?</a>
+          </div>
+          <button type="submit" class="btn-submit btn-signin" id="loginBtn">
+            <span>Sign In →</span>
+          </button>
+        </form>
+
+        <p class="mobile-toggle">Don't have an account? <a href="#" id="mobileShowSignUp">Sign Up</a></p>
+      </div>
+
+      <!-- SIGN UP PANEL (Right) -->
+      <div class="panel sign-up-panel" id="signUpPanel">
+        <h2>Create Account</h2>
+        <p class="panel-subtitle">Join us — it's totally free!</p>
+
+        <div class="social-btns">
+          <button type="button" class="social-btn google-btn" id="googleSignUpBtn">
+            <img src="https://developers.google.com/identity/images/g-logo.png" alt="G" width="18" height="18">
+            <span>Sign up with Google</span>
+          </button>
+        </div>
+
+        <div class="divider">
+          <span></span>
+          <small>or with email</small>
+          <span></span>
+        </div>
+
+        <form id="signUpForm">
+          <div class="name-row">
+            <input type="text" id="signupFirstName" placeholder="First name" required>
+            <input type="text" id="signupLastName" placeholder="Last name (optional)">
+          </div>
+          <input type="email" id="signupEmail" placeholder="yourname@nitj.ac.in" required>
+          <input type="password" id="signupPassword" placeholder="Password" required minlength="8">
+          <p class="password-hint">Min 8 chars: 1 uppercase, 1 lowercase, 1 number, 1 special char</p>
+          <input type="password" id="signupConfirmPassword" placeholder="Confirm password" required minlength="8">
+          <select id="signupRole" required>
+            <option value="" disabled selected>Select Role</option>
+            <option value="student">Student</option>
+            <option value="coordinator">Student Coordinator</option>
+            <option value="faculty">Faculty</option>
+          </select>
+          <select id="signupClub" style="display:none;" required>
+            <option value="" disabled selected>Select Club to Coordinate</option>
+          </select>
+          <button type="submit" class="btn-submit btn-signup" id="signupBtn">
+            <span>Create Account →</span>
+          </button>
+        </form>
+
+        <p class="terms-text">
+          By signing up you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy</a>
+        </p>
+
+        <p class="mobile-toggle">Already have an account? <a href="#" id="mobileShowSignIn">Sign In</a></p>
+      </div>
+
+      <!-- SLIDING OVERLAY -->
+      <div class="sliding-overlay" id="slidingOverlay">
+        <div class="overlay-glow glow-top"></div>
+        <div class="overlay-glow glow-bottom"></div>
+
+        <div class="overlay-brand">✦ AUTH<span class="brand-dot">.</span></div>
+        <div class="overlay-divider"></div>
+
+        <!-- Content when showing Sign In (overlay on left, telling user to sign up) -->
+        <div class="overlay-content show-signup-content" id="signUpContent">
+          <h3>New here?</h3>
+          <p>Create an account and start your journey. It only takes a minute!</p>
+          <button class="btn-overlay" id="goToSignUp">Sign Up →</button>
+        </div>
+
+        <!-- Content when showing Sign Up (overlay on right, telling user to sign in) -->
+        <div class="overlay-content show-signin-content" id="signInContent">
+          <h3>Have an account?</h3>
+          <p>Sign in to continue where you left off. We missed you!</p>
+          <button class="btn-overlay" id="goToSignIn">← Sign In</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+      <i class="fas fa-info-circle"></i>
+      <span id="toastMessage"></span>
+    </div>
+
+    <!-- Demo credentials hint -->
+    <div class="demo-hint" id="demoHint">
+      <i class="fas fa-lightbulb"></i>
+      <span>Demo: <strong>faculty@college.edu.in</strong> / <strong>faculty123</strong></span>
+      <button onclick="document.getElementById('demoHint').style.display='none'"><i class="fas fa-times"></i></button>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+</body>
+
+</html>

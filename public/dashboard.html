@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — CampusEvents</title>
+    <meta name="description" content="Manage and view college events, clubs, and coordinator requests">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/dashboard.css">
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-calendar-check"></i>
+                <span>CampusEvents</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarClose" title="Close menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="events" id="navEvents">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Events</span>
+            </a>
+            <a href="#" class="nav-item" data-section="create-event" id="navCreateEvent" style="display:none;">
+                <i class="fas fa-plus-circle"></i>
+                <span>Create Event</span>
+            </a>
+            <a href="#" class="nav-item" data-section="approvals" id="navApprovals" style="display:none;">
+                <i class="fas fa-clipboard-check"></i>
+                <span>Approvals</span>
+                <span class="nav-badge" id="approvalBadge" style="display:none;">0</span>
+            </a>
+            <a href="#" class="nav-item" data-section="coordinators" id="navCoordinators" style="display:none;">
+                <i class="fas fa-user-check"></i>
+                <span>Coordinators</span>
+                <span class="nav-badge" id="coordBadge" style="display:none;">0</span>
+            </a>
+            <a href="#" class="nav-item" data-section="my-requests" id="navMyRequests" style="display:none;">
+                <i class="fas fa-paper-plane"></i>
+                <span>My Requests</span>
+            </a>
+            <a href="#" class="nav-item" data-section="clubs" id="navClubs">
+                <i class="fas fa-users-cog"></i>
+                <span>Clubs</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info" id="userInfo">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-details">
+                    <span class="user-name" id="userName">User</span>
+                    <span class="user-role" id="userRole">Role</span>
+                </div>
+            </div>
+            <button class="logout-btn" id="logoutBtn" title="Logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header" id="mobileHeader">
+        <button class="hamburger" id="hamburger">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="mobile-logo">
+            <i class="fas fa-calendar-check"></i>
+            <span>CampusEvents</span>
+        </div>
+        <div class="mobile-user" id="mobileUser">U</div>
+    </header>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- ====== EVENTS SECTION ====== -->
+        <section class="content-section active" id="sectionEvents">
+            <div class="section-header">
+                <div>
+                    <h1><i class="fas fa-calendar-alt"></i> Events</h1>
+                    <p class="section-desc">Discover upcoming events across campus</p>
+                </div>
+                <div class="header-actions">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="eventSearch" placeholder="Search events...">
+                    </div>
+                    <select id="eventFilter" class="filter-select">
+                        <option value="all">All Clubs</option>
+                    </select>
+                </div>
+            </div>
+            <div class="events-grid" id="eventsGrid">
+                <!-- Events loaded dynamically -->
+            </div>
+            <div class="empty-state" id="eventsEmpty" style="display:none;">
+                <i class="fas fa-calendar-times"></i>
+                <h3>No events found</h3>
+                <p>There are no events to display right now.</p>
+            </div>
+        </section>
+
+        <!-- ====== CREATE EVENT SECTION ====== -->
+        <section class="content-section" id="sectionCreateEvent">
+            <div class="section-header">
+                <div>
+                    <h1><i class="fas fa-plus-circle"></i> <span id="eventFormTitle">Create Event</span></h1>
+                    <p class="section-desc">Fill in the details to create a new event</p>
+                </div>
+            </div>
+            <div class="form-card">
+                <form id="eventForm">
+                    <input type="hidden" id="editEventId" value="">
+                    <div class="form-grid">
+                        <div class="form-group full-width">
+                            <label for="eventName"><i class="fas fa-heading"></i> Event Name</label>
+                            <input type="text" id="eventName" placeholder="Enter event name" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="eventDescription"><i class="fas fa-align-left"></i> Description</label>
+                            <textarea id="eventDescription" placeholder="Describe the event..." rows="4"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventDate"><i class="fas fa-calendar"></i> Date</label>
+                            <input type="date" id="eventDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventTime"><i class="fas fa-clock"></i> Start Time</label>
+                            <input type="time" id="eventTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventEndTime"><i class="fas fa-clock"></i> End Time</label>
+                            <input type="time" id="eventEndTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventLocation"><i class="fas fa-map-marker-alt"></i> Venue</label>
+                            <select id="eventLocation" required>
+                                <option value="" disabled selected>Select Venue</option>
+                                <optgroup label="Lecture Theatres">
+                                    <option value="LT 101">LT 101</option>
+                                    <option value="LT 102">LT 102</option>
+                                    <option value="LT 103">LT 103</option>
+                                    <option value="LT 104">LT 104</option>
+                                    <option value="LT 201">LT 201</option>
+                                    <option value="LT 202">LT 202</option>
+                                    <option value="LT 203">LT 203</option>
+                                    <option value="LT 204">LT 204</option>
+                                    <option value="LT 301">LT 301</option>
+                                    <option value="LT 302">LT 302</option>
+                                    <option value="LT 303">LT 303</option>
+                                    <option value="LT 304">LT 304</option>
+                                    <option value="LT 401">LT 401</option>
+                                    <option value="LT 402">LT 402</option>
+                                    <option value="LT 403">LT 403</option>
+                                    <option value="LT 404">LT 404</option>
+                                </optgroup>
+                                <optgroup label="Seminar Blocks">
+                                    <option value="SB1">SB1</option>
+                                    <option value="SB2">SB2</option>
+                                    <option value="SB3">SB3</option>
+                                </optgroup>
+                                <optgroup label="Blocks">
+                                    <option value="A2">A2</option>
+                                    <option value="C4">C4</option>
+                                    <option value="C5">C5</option>
+                                </optgroup>
+                                <optgroup label="Other Venues">
+                                    <option value="IT Park">IT Park</option>
+                                    <option value="Main Ground">Main Ground</option>
+                                    <option value="Community Center">Community Center</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="eventClub"><i class="fas fa-users"></i> Organizing Club</label>
+                            <select id="eventClub" required>
+                                <option value="" disabled selected>Select Club</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="cancelEventBtn">Cancel</button>
+                        <button type="submit" class="btn-primary" id="submitEventBtn">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Create Event</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ====== APPROVALS SECTION ====== -->
+        <section class="content-section" id="sectionApprovals">
+            <div class="section-header">
+                <div>
+                    <h1><i class="fas fa-clipboard-check"></i> Event Approvals</h1>
+                    <p class="section-desc">Review and approve pending event requests</p>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table" id="approvalsTable">
+                    <thead>
+                        <tr>
+                            <th>Event Name</th>
+                            <th>Club</th>
+                            <th>Created By</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="approvalsBody">
+                    </tbody>
+                </table>
+            </div>
+            <div class="empty-state" id="approvalsEmpty" style="display:none;">
+                <i class="fas fa-check-double"></i>
+                <h3>All caught up!</h3>
+                <p>No pending event approvals at the moment.</p>
+            </div>
+        </section>
+
+        <!-- ====== COORDINATORS SECTION ====== -->
+        <section class="content-section" id="sectionCoordinators">
+            <div class="section-header">
+                <div>
+                    <h1><i class="fas fa-user-check"></i> Coordinator Verification</h1>
+                    <p class="section-desc">Verify student coordinators for club management</p>
+                </div>
+            </div>
+            <div class="table-wrapper">
+                <table class="data-table" id="coordinatorsTable">
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Email</th>
+                            <th>Club</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="coordinatorsBody">
+                    </tbody>
+                </table>
+            </div>
+            <div class="empty-state" id="coordsEmpty" style="display:none;">
+                <i class="fas fa-user-check"></i>
+                <h3>No requests</h3>
+                <p>No pending coordinator verification requests.</p>
+            </div>
+        </section>
+
+        <!-- ====== MY REQUESTS SECTION (Coordinator) ====== -->
+        <section class="content-section" id="sectionMyRequests">
+            <div class="section-header">
+                <div>
+                    <h1><i class="fas fa-paper-plane"></i> My Verification Requests</h1>
+                    <p class="section-desc">Track the status of your coordinator verification requests</p>
+                </div>
+                <button class="btn-primary" id="newRequestBtn">
+                    <i class="fas fa-plus"></i>
+                    <span>Request Verification</span>
+                </button>
+            </div>
+            <div class="cards-list" id="myRequestsList">
+            </div>
+            <div class="empty-state" id="myRequestsEmpty" style="display:none;">
+                <i class="fas fa-paper-plane"></i>
+                <h3>No requests yet</h3>
+                <p>Request verification for a club to start managing events.</p>
+            </div>
+        </section>
+
+        <!-- ====== CLUBS SECTION ====== -->
+        <section class="content-section" id="sectionClubs">
+            <div class="section-header">
+                <div>
+                    <h1><i class="fas fa-users-cog"></i> Clubs</h1>
+                    <p class="section-desc">Explore clubs and organizations on campus</p>
+                </div>
+                <button class="btn-primary" id="addClubBtn" style="display:none;">
+                    <i class="fas fa-plus"></i>
+                    <span>Add Club</span>
+                </button>
+            </div>
+            <div class="clubs-grid" id="clubsGrid">
+            </div>
+        </section>
+    </main>
+
+    <!-- ====== EVENT DETAIL MODAL ====== -->
+    <div class="modal-overlay" id="eventModal">
+        <div class="modal">
+            <button class="modal-close" id="modalClose"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <span class="modal-badge" id="modalStatus">Approved</span>
+                <h2 id="modalTitle">Event Name</h2>
+                <div class="modal-meta">
+                    <span><i class="fas fa-users"></i> <span id="modalClub">Club</span></span>
+                    <span><i class="fas fa-user"></i> <span id="modalCreator">Creator</span></span>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-info-grid">
+                    <div class="modal-info-item">
+                        <i class="fas fa-calendar"></i>
+                        <div>
+                            <label>Date</label>
+                            <span id="modalDate">—</span>
+                        </div>
+                    </div>
+                    <div class="modal-info-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <label>Time</label>
+                            <span id="modalTime">—</span>
+                        </div>
+                    </div>
+                    <div class="modal-info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <label>Location</label>
+                            <span id="modalLocation">—</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-description">
+                    <h3>About this Event</h3>
+                    <p id="modalDescription">Description goes here...</p>
+                </div>
+            </div>
+            <div class="modal-actions" id="modalActions">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== REQUEST VERIFICATION MODAL ====== -->
+    <div class="modal-overlay" id="verifyModal">
+        <div class="modal modal-sm">
+            <button class="modal-close" id="verifyModalClose"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <h2>Request Club Verification</h2>
+                <p>Select a club you'd like to coordinate</p>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Select Club</label>
+                    <select id="verifyClubSelect">
+                        <option value="" disabled selected>Choose a club</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" id="cancelVerifyBtn">Cancel</button>
+                <button class="btn-primary" id="submitVerifyBtn">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Submit Request</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== ADD/EDIT CLUB MODAL ====== -->
+    <div class="modal-overlay" id="clubModal">
+        <div class="modal modal-sm">
+            <button class="modal-close" id="clubModalClose"><i class="fas fa-times"></i></button>
+            <div class="modal-header">
+                <h2 id="clubModalTitle">Add Club</h2>
+            </div>
+            <div class="modal-body">
+                <form id="clubForm">
+                    <input type="hidden" id="editClubId" value="">
+                    <div class="form-group">
+                        <label>Club Name</label>
+                        <input type="text" id="clubName" placeholder="Enter club name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="clubDescription" placeholder="Describe the club..." rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-secondary" id="cancelClubBtn">Cancel</button>
+                <button class="btn-primary" id="submitClubBtn">
+                    <i class="fas fa-check"></i>
+                    <span>Save Club</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-info-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+
+</html>
